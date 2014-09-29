@@ -3,11 +3,30 @@
 <h1>{{ calendar.name }}</h1>
 <div>
 	<ul>
-		{% for precal in app.user.precalendars %}
-		<li><a href="{{ path('calendar_default', {'hash': precal.calendar.hash}) }}">{{ precal.calendar.name }}</a></li>
+		{% for precal in app.user.precalendars if precal.calendar.isactive %}
+		<li>
+			<a href="{{ path('calendar_default', {'hash': precal.calendar.hash}) }}">{{ precal.calendar.name }}</a>
+			{% if not loop.first %}<a href="{{ path('calendar_cancel', {'hash': precal.calendar.hash}) }}">remove</a>{% endif %}
+		</li>
 		{% endfor %}
 		<li><a href="{{ path('calendar_new') }}">New</a></li>
 	</ul>
 </div>
-
+<div>
+	<a class="btn btn-default" href="{{ path('event_new', {'hash': calendar.hash}) }}">Create</a>
+</div>
+<table class="table">
+	<tr>
+		<th>Start</th>
+		<th>End</th>
+		<th>Hash</th>
+	</tr>
+	{% for event in calendar.events %}
+	<tr>
+		<td>{{ event.start|date('d/m/Y') }}</td>
+		<td>{{ event.end ? event.end|date('d/m/Y') }}</td>
+		<td>{{ event.hash }}</td>
+	</tr>
+	{% endfor %}
+</table>
 {% endblock %}

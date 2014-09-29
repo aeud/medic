@@ -53,13 +53,13 @@ class UserCalendar
     private $lastViewed;
 	
     /**
-     * @ORM\ManyToOne(targetEntity="Medic\DashboardBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Medic\DashboardBundle\Entity\User", inversedBy="preCalendars")
      * @ORM\JoinColumn(nullable=false, name="user_id")
      */
     private $user;
 	
     /**
-     * @ORM\ManyToOne(targetEntity="Medic\DashboardBundle\Entity\Calendar")
+     * @ORM\ManyToOne(targetEntity="Medic\DashboardBundle\Entity\Calendar", inversedBy="preUsers")
      * @ORM\JoinColumn(nullable=false, name="calendar_id")
      */
     private $calendar;

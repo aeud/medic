@@ -62,6 +62,12 @@ class Calendar
 	 * @ORM\OrderBy({"createdAt" = "ASC"})
      */
     private $preUsers;
+	
+	/**
+     * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\Event", mappedBy="calendar")
+	 * @ORM\OrderBy({"start" = "ASC"})
+     */
+    private $events;
 
     /**
      * @ORM\PrePersist
@@ -242,5 +248,38 @@ class Calendar
     public function getPreUsers()
     {
         return $this->preUsers;
+    }
+
+    /**
+     * Add events
+     *
+     * @param \Medic\DashboardBundle\Entity\Event $events
+     * @return Calendar
+     */
+    public function addEvent(\Medic\DashboardBundle\Entity\Event $events)
+    {
+        $this->events[] = $events;
+
+        return $this;
+    }
+
+    /**
+     * Remove events
+     *
+     * @param \Medic\DashboardBundle\Entity\Event $events
+     */
+    public function removeEvent(\Medic\DashboardBundle\Entity\Event $events)
+    {
+        $this->events->removeElement($events);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }

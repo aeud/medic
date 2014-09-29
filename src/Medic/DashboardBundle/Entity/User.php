@@ -36,6 +36,12 @@ class User extends BaseUser
      */
     private $preCalendars;
 	
+	/**
+     * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\Event", mappedBy="createdBy")
+	 * @ORM\OrderBy({"createdAt" = "ASC"})
+     */
+    private $events;
+	
 	public function __construct()
     {
         parent::__construct();
@@ -113,5 +119,38 @@ class User extends BaseUser
     public function getPreCalendars()
     {
         return $this->preCalendars;
+    }
+
+    /**
+     * Add events
+     *
+     * @param \Medic\DashboardBundle\Entity\Event $events
+     * @return User
+     */
+    public function addEvent(\Medic\DashboardBundle\Entity\Event $events)
+    {
+        $this->events[] = $events;
+
+        return $this;
+    }
+
+    /**
+     * Remove events
+     *
+     * @param \Medic\DashboardBundle\Entity\Event $events
+     */
+    public function removeEvent(\Medic\DashboardBundle\Entity\Event $events)
+    {
+        $this->events->removeElement($events);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }
