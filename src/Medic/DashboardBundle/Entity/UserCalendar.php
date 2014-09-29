@@ -3,15 +3,17 @@
 namespace Medic\DashboardBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Calendar
+ * UserCalendar
  *
- * @ORM\Table(name="calendar")
+ * @ORM\Table(name="user_has_calendar")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity({"user", "calendar"})
  */
-class Calendar
+class UserCalendar
 {
     /**
      * @var integer
@@ -39,35 +41,33 @@ class Calendar
     /**
      * @var string
      *
-     * @ORM\Column(name="hash", type="string", length=8, unique=true)
+     * @ORM\Column(name="role", type="string", length=20)
      */
-    private $hash;
-	
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=127)
-     */
-    private $name;
-	
+    private $role;
+
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(name="last_viewed", type="boolean")
      */
-    private $isActive;
+    private $lastViewed;
 	
-	/**
-     * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\UserCalendar", mappedBy="calendar")
-	 * @ORM\OrderBy({"createdAt" = "ASC"})
+    /**
+     * @ORM\ManyToOne(targetEntity="Medic\DashboardBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false, name="user_id")
      */
-    private $preUsers;
-
+    private $user;
+	
+    /**
+     * @ORM\ManyToOne(targetEntity="Medic\DashboardBundle\Entity\Calendar")
+     * @ORM\JoinColumn(nullable=false, name="calendar_id")
+     */
+    private $calendar;
+	
     /**
      * @ORM\PrePersist
      */
     public function prePersist() {
-        $this->setHash(hash('crc32b', uniqid('', true)));
 		$this->setCreatedAt(new \DateTime());
 		$this->setUpdatedAt(new \DateTime());
     }
@@ -78,6 +78,7 @@ class Calendar
     public function preUpdate() {
 		$this->setUpdatedAt(new \DateTime());
     }
+
 
     /**
      * Get id
@@ -93,7 +94,7 @@ class Calendar
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Calendar
+     * @return UserCalendar
      */
     public function setCreatedAt($createdAt)
     {
@@ -116,7 +117,7 @@ class Calendar
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Calendar
+     * @return UserCalendar
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -136,111 +137,94 @@ class Calendar
     }
 
     /**
-     * Set hash
+     * Set role
      *
-     * @param string $hash
-     * @return Calendar
+     * @param string $role
+     * @return UserCalendar
      */
-    public function setHash($hash)
+    public function setRole($role)
     {
-        $this->hash = $hash;
+        $this->role = $role;
 
         return $this;
     }
 
     /**
-     * Get hash
+     * Get role
      *
      * @return string 
      */
-    public function getHash()
+    public function getRole()
     {
-        return $this->hash;
+        return $this->role;
     }
 
     /**
-     * Set isActive
+     * Set lastViewed
      *
-     * @param boolean $isActive
-     * @return Calendar
+     * @param boolean $lastViewed
+     * @return UserCalendar
      */
-    public function setIsActive($isActive)
+    public function setLastViewed($lastViewed)
     {
-        $this->isActive = $isActive;
+        $this->lastViewed = $lastViewed;
 
         return $this;
     }
 
     /**
-     * Get isActive
+     * Get lastViewed
      *
      * @return boolean 
      */
-    public function getIsActive()
+    public function getLastViewed()
     {
-        return $this->isActive;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->preUsers = new \Doctrine\Common\Collections\ArrayCollection();
+        return $this->lastViewed;
     }
 
     /**
-     * Set name
+     * Set user
      *
-     * @param string $name
-     * @return Calendar
+     * @param \Medic\DashboardBundle\Entity\User $user
+     * @return UserCalendar
      */
-    public function setName($name)
+    public function setUser(\Medic\DashboardBundle\Entity\User $user)
     {
-        $this->name = $name;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get user
      *
-     * @return string 
+     * @return \Medic\DashboardBundle\Entity\User 
      */
-    public function getName()
+    public function getUser()
     {
-        return $this->name;
+        return $this->user;
     }
 
     /**
-     * Add preUsers
+     * Set calendar
      *
-     * @param \Medic\DashboardBundle\Entity\UserCalendar $preUsers
-     * @return Calendar
+     * @param \Medic\DashboardBundle\Entity\Calendar $calendar
+     * @return UserCalendar
      */
-    public function addPreUser(\Medic\DashboardBundle\Entity\UserCalendar $preUsers)
+    public function setCalendar(\Medic\DashboardBundle\Entity\Calendar $calendar)
     {
-        $this->preUsers[] = $preUsers;
+        $this->calendar = $calendar;
 
         return $this;
     }
 
     /**
-     * Remove preUsers
+     * Get calendar
      *
-     * @param \Medic\DashboardBundle\Entity\UserCalendar $preUsers
+     * @return \Medic\DashboardBundle\Entity\Calendar 
      */
-    public function removePreUser(\Medic\DashboardBundle\Entity\UserCalendar $preUsers)
+    public function getCalendar()
     {
-        $this->preUsers->removeElement($preUsers);
-    }
-
-    /**
-     * Get preUsers
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPreUsers()
-    {
-        return $this->preUsers;
+        return $this->calendar;
     }
 }

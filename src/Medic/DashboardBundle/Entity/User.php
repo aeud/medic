@@ -30,6 +30,12 @@ class User extends BaseUser
      */
     private $hash;
 	
+	/**
+     * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\UserCalendar", mappedBy="user")
+	 * @ORM\OrderBy({"createdAt" = "ASC"})
+     */
+    private $preCalendars;
+	
 	public function __construct()
     {
         parent::__construct();
@@ -74,5 +80,38 @@ class User extends BaseUser
     public function getHash()
     {
         return $this->hash;
+    }
+
+    /**
+     * Add preCalendars
+     *
+     * @param \Medic\DashboardBundle\Entity\UserCalendar $preCalendars
+     * @return User
+     */
+    public function addPreCalendar(\Medic\DashboardBundle\Entity\UserCalendar $preCalendars)
+    {
+        $this->preCalendars[] = $preCalendars;
+
+        return $this;
+    }
+
+    /**
+     * Remove preCalendars
+     *
+     * @param \Medic\DashboardBundle\Entity\UserCalendar $preCalendars
+     */
+    public function removePreCalendar(\Medic\DashboardBundle\Entity\UserCalendar $preCalendars)
+    {
+        $this->preCalendars->removeElement($preCalendars);
+    }
+
+    /**
+     * Get preCalendars
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPreCalendars()
+    {
+        return $this->preCalendars;
     }
 }
