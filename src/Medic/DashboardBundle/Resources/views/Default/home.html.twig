@@ -1,4 +1,13 @@
 {% extends '::base.html.twig' %}
 {% block body %}
-<h1>Hello!</h1>
+<h1>{{ calendar.name }}</h1>
+<div>
+	<ul>
+		{% for precal in app.user.precalendars %}
+		<li><a href="{{ path('calendar_default', {'hash': precal.calendar.hash}) }}">{{ precal.calendar.name }}</a></li>
+		{% endfor %}
+		<li><a href="{{ path('calendar_new') }}">New</a></li>
+	</ul>
+</div>
+
 {% endblock %}
