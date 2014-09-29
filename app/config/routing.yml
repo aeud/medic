@@ -1,0 +1,5 @@
+medic_dashboard:
+    resource: "@MedicDashboardBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
