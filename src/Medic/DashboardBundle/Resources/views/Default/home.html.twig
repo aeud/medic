@@ -19,14 +19,106 @@
 	<tr>
 		<th>Start</th>
 		<th>End</th>
+		<th>Title</th>
 		<th>Hash</th>
 	</tr>
 	{% for event in calendar.events %}
 	<tr>
-		<td>{{ event.start|date('d/m/Y') }}</td>
-		<td>{{ event.end ? event.end|date('d/m/Y') }}</td>
-		<td>{{ event.hash }}</td>
+		<td>{{ event.start|date('d/m/Y H:i') }}</td>
+		<td>{{ event.end ? event.end|date('d/m/Y H:i') }}</td>
+		<td>{{ event.title }}</td>
+		<td><a href="{{ path('event_edit', {'hash': event.calendar.hash, 'hash2': event.hash}) }}">{{ event.hash }}</a></td>
 	</tr>
 	{% endfor %}
 </table>
+<div>
+	<button data-hour="11" data-uniqid="1" data-minutes="15" data-date="2014-12-12" type="button" class="btn btn-danger new-event" data-toggle="popover">Click to toggle popover</button>
+	<button data-hour="11" data-uniqid="2" data-minutes="30" data-date="2014-12-12" type="button" class="btn btn-danger new-event" data-toggle="popover">Click to toggle popover</button>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+$('.new-event').popover({
+	'title': '<button type="button" class="close popover-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>Test',
+	'html': true,
+	'content': genQuickForm,
+	'placement': 'top',
+	'trigger': 'manual',
+	'delay': {
+		'show': 100
+	}
+});
+var activePop = null;
+$('.new-event').click(function(){
+	if (activePop && activePop.data('uniqid') == $(this).data('uniqid')) {
+		// activePop.popover('hide');
+		// activePop = null;
+	} else {
+		if (activePop) {
+			activePop.popover('hide');
+		}
+		activePop = $(this);
+		activePop.popover('show');
+	}
+});
+$('.new-event').on('shown.bs.popover', function () {
+	$('#titleInput').focus();
+	$('.popover-close').click(function(){
+		$('.new-event').popover('hide');
+		activePop = null;
+	});
+});
+
+function genQuickForm() {
+	var hour = $(this).data('hour');
+	console.log(hour);
+	var minutes = $(this).data('minutes');
+	var date = $(this).data('date');
+	var html = '';
+	html += '<form class="form-horizontal" role="form" action="{{ path('event_new', {'hash': calendar.hash}) }}" method="POST">';
+	html += '<div class="form-group">';
+	html += '<div class="col-sm-12">';
+	html += '<input type="text" class="form-control" id="titleInput" name="title" placeholder="Title">';
+	html += '</div>';
+	html += '</div>';
+	html += '<div class="form-group">';
+	html += '<div class="col-sm-4">';
+	html += '<select type="text" class="form-control" id="startHoursInput" name="starth">';
+	for (var i = 0; i < 24; i++) {
+		var h = (i < 10 ? '0' : '') + i;
+		html += '<option' + (h == hour ? ' selected' : '') + '>'+h+'</option>';
+	}
+	html += '</select>';
+	html += '</div>';
+	html += '<div class="col-sm-4">';
+	html += '<select type="text" class="form-control" id="startMinutesInput" name="startm">';
+	html += '<option' + ('00' == minutes ? ' selected' : '') + ' value="00">00</option>';
+	html += '<option' + ('15' == minutes ? ' selected' : '') + ' value="15">15</option>';
+	html += '<option' + ('30' == minutes ? ' selected' : '') + ' value="30">30</option>';
+	html += '<option' + ('45' == minutes ? ' selected' : '') + ' value="45">45</option>';
+	html += '</select>';
+	html += '</div>';
+	html += '<div class="col-sm-4">';
+	html += '<select type="text" class="form-control" id="durationInput" name="duration">';
+	html += '<option value="+15 minutes">15</option>';
+	html += '<option value="+30 minutes">30</option>';
+	html += '<option value="+45 minutes">45</option>';
+	html += '</select>';
+	html += '</div>';
+	html += '</div>';
+	html += '<div class="form-group">';
+	html += '<div class="col-sm-12">';
+	html += '<div class="btn-group">';
+//	html += '<button type="button" class="btn btn-default popover-close">Cancel</button>';
+	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">More</a>';
+	html += '<button type="submit" class="btn btn-primary">Right</button>';
+	html += '</div>';
+	html += '</div>';
+	html += '</div>';
+	html += '</form>';
+	return html;
+}
+</script>
 {% endblock %}

@@ -1,0 +1,102 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+<form class="form-horizontal" role="form" action="{{ path('event_edit', {'hash': event.calendar.hash, 'hash2': event.hash}) }}" method="POST">
+	<div class="form-group">
+		<div class="col-sm-12">
+			<a href="{{ path('event_cancel', {'hash': event.calendar.hash, 'hash2': event.hash}) }}" class="btn btn-default pull-right"><i class="fa fa-trash"></i></a>
+			<a href="{{ path('home') }}" class="btn btn-default"><i class="fa fa-long-arrow-left"></i></a>
+			<button type="submit" class="btn btn-danger">SAVE</button>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="titleInput" class="col-sm-2 control-label">Title</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="titleInput" name="title" value="{{ event.title }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="startInput" class="col-sm-2 control-label">Start</label>
+		<div class="col-sm-8">
+			<input type="text" class="form-control" id="startInput" name="start" value="{{ event.start | date('d/m/Y') }}">
+		</div>
+		<div class="col-sm-1">
+			<select type="text" class="form-control" id="startHoursInput" name="starth">
+				{% for i in 0..23 %}
+				<option {{ i == event.start | date('H') | number_format ? 'selected' }}>{{ i < 10 ? '0' }}{{ i }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-sm-1">
+			<select type="text" class="form-control" id="startMinutesInput" name="startm">
+				<option {{ 0 == event.start | date('i') | number_format ? 'selected' }}>00</option>
+				<option {{ 15 == event.start | date('i') | number_format ? 'selected' }}>15</option>
+				<option {{ 30 == event.start | date('i') | number_format ? 'selected' }}>30</option>
+				<option {{ 45 == event.start | date('i') | number_format ? 'selected' }}>45</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="endInput" class="col-sm-2 control-label">End</label>
+		<div class="col-sm-8">
+			<input type="text" class="form-control" id="endInput" name="end" value="{{ event.end | date('d/m/Y') }}">
+		</div>
+		<div class="col-sm-1">
+			<select type="text" class="form-control" id="endHoursInput" name="endh">
+				{% for i in 0..23 %}
+				<option {{ i == event.end | date('H') | number_format ? 'selected' }}>{{ i < 10 ? '0' }}{{ i }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-sm-1">
+			<select type="text" class="form-control" id="endMinutesInput" name="endm">
+				<option {{ '00' == event.end | date('i') ? 'selected' }}>00</option>
+				<option {{ '15' == event.end | date('i') ? 'selected' }}>15</option>
+				<option {{ '30' == event.end | date('i') ? 'selected' }}>30</option>
+				<option {{ '45' == event.end | date('i') ? 'selected' }}>45</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="nameInput" class="col-sm-2 control-label">Name</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="nameInput" name="name" value="{{ event.name }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="phoneInput" class="col-sm-2 control-label">Phone</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="phoneInput" name="phone" value="{{ event.phone }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="emailInput" class="col-sm-2 control-label">Email</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="emailInput" name="email" value="{{ event.email }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="descriptionInput" class="col-sm-2 control-label">Description</label>
+		<div class="col-sm-10">
+			<textarea class="form-control" id="descriptionInput" name="description">{{ event.description }}</textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="privacyInput" class="col-sm-2 control-label">Privacy</label>
+		<div class="col-sm-10">
+			<select class="form-control" id="privacyInput" name="privacy">
+				<option value="private" {{ event.privacy == 'private' ? 'selected' }}>Private</option>
+				<option value="public" {{ event.privacy == 'public' ? 'selected' }}>Public</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="showMeInput" class="col-sm-2 control-label">Show me as</label>
+		<div class="col-sm-10">
+			<select class="form-control" id="showMeInput" name="showme">
+				<option value="busy" {{ event.showas == 'busy' ? 'selected' }}>Busy</option>
+				<option value="free" {{ event.showas == 'free' ? 'selected' }}>Free</option>
+			</select>
+		</div>
+	</div>
+</form>
+{% endblock %}
