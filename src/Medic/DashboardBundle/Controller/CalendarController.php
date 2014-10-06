@@ -7,11 +7,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Medic\DashboardBundle\Entity\Calendar;
 use Medic\DashboardBundle\Entity\UserCalendar as Link;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CalendarController extends Controller
 {
     /**
-     * @Route("/calendar/default/{hash}", name="calendar_default", defaults={"hash"=NULL})
+     * @Route("/calendar/{hash}/default", name="calendar_default", defaults={"hash"=NULL})
      */
     public function defaultAction($hash)
     {
@@ -73,7 +74,7 @@ class CalendarController extends Controller
     }
 	
     /**
-     * @Route("/calendar/cancel/{hash}", name="calendar_cancel")
+     * @Route("/calendar/{hash}/cancel", name="calendar_cancel")
      */
     public function cancelAction($hash)
     {

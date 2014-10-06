@@ -1,0 +1,17 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% stylesheets '@MedicDashboardBundle/Resources/public/css/main.css' filter='cssrewrite' %}
+	<link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+<header>
+	<div class="login pull-right">
+		<a href="{{ path('fos_user_security_login') }}">Login</a>
+		{#  <a href="{{ path('fos_user_registration_register') }}">Sign in</a>#}
+	</div>
+</header>
+{% endblock %}

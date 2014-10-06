@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Medic\DashboardBundle\Entity\Calendar;
 use Medic\DashboardBundle\Entity\UserCalendar as Link;
 use Medic\DashboardBundle\Entity\Event;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EventController extends Controller
 {
@@ -78,6 +79,8 @@ class EventController extends Controller
 		if (!$showMe) $showMe = 'busy';
 		$duration = $query->get('duration');
 		
+		$call = $query->get('call');
+		
 		$from = new \DateTime($start . ' ' . $startH . ':' . $startM);
 		
 		if ($end && $endH && $endM) {
@@ -104,7 +107,14 @@ class EventController extends Controller
 		$em->persist($event);
 		$em->flush();
 		
-		return $this->redirect($this->generateUrl('home'));
+		if ($call) {
+			return $this->redirect($call);
+		} else {
+			return $this->redirect($this->generateUrl('home', array(
+				'from' => $from->format('Y-m-d')
+			)));
+		}
+		
     }
 	
     /**
@@ -188,7 +198,9 @@ class EventController extends Controller
 		
 		$em->flush();
 		
-		return $this->redirect($this->generateUrl('home'));
+		return $this->redirect($this->generateUrl('home', array(
+			'from' => $from->format('Y-m-d')
+		)));
     }
 	
     /**
@@ -217,5 +229,74 @@ class EventController extends Controller
 		$em->flush();
 		
 		return $this->redirect($this->generateUrl('home'));
+    }
+	
+    /**
+     * @Route("/calendar/{hash}/events", name="calendar_events")
+	 * @Method("GET")
+     */
+    public function eventsAction($hash)
+    {
+		$request = $this->getRequest();
+		$query = $request->query;
+		
+		$from = $query->get('from');
+		$to = $query->get('to');
+		
+		if (preg_match('/^20[0-2][0-9]\-[0,1][0-9]\-[0-3][0-9]$/i', $from) && preg_match('/^20[0-2][0-9]\-[0,1][0-9]\-[0-3][0-9]$/i', $to)) {
+			$from = new \DateTime($from);
+			$to = new \DateTime($to);
+		} else {
+			$from = new \DateTime();
+			while ($from->format('N') != '1'){
+				$from->modify('-1 day');
+			}
+			$to = new \DateTime($from->format('Y-m-d'));
+			$to->modify('+5 days');
+		}
+		
+		$em = $this->getDoctrine()->getManager();
+		$user = $this->getUser();
+		$query = $em->createQuery(
+		    'SELECT e.start, e.end, e.title, e.hash
+		    FROM MedicDashboardBundle:Event e
+			LEFT JOIN e.calendar c
+			LEFT JOIN c.preUsers l
+		    WHERE c.hash = :hash AND l.user = :user AND c.isActive = 1 AND e.start <= :to AND e.end >= :from'
+		)->setParameters(array(
+			'user' => $user,
+			'hash' => $hash,
+			'from' => $from,
+			'to' => $to
+		));
+		$results = $query->getResult();
+		$response = new JsonResponse();
+		
+		$events = array();
+		foreach ($results as $event) {
+			$durationSteps = ($event['end']->getTimestamp() - $event['start']->getTimestamp()) / 60 / 15;
+			for ($i=0; $i < $durationSteps; $i++) { 
+				if ($i > 0) {
+					$event['start']->modify('+15 minutes');
+				}
+				if (!isset($events[$event['start']->format('Y-m-d H:i:s')])) $events[$event['start']->format('Y-m-d H:i:s')] = array();
+				$events[$event['start']->format('Y-m-d H:i:s')] = array(
+					'start' => $event['start']->format('Y-m-d H:i:s'),
+					'title' => $event['title'],
+					'hash' => $event['hash']
+				);
+			}
+		}
+		
+		$response->setData(array(
+			'dates' => array(
+				'from' => $from,
+				'to' => $to
+			),
+			'results' => count($events),
+		    //'events' => $events,
+			'events' => $events
+		));
+		return $response;
     }
 }

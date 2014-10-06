@@ -1,0 +1,126 @@
+body {
+	font-family: 'Muli', sans-serif;
+	color: #1d1d1d;
+}
+h1, .h1, h2, .h2, h3, .h3 {
+	margin: 0;
+	padding: 0;
+}
+header {
+	height: 40px;
+	padding: 10px 0 0 0;
+}
+.power-off a {
+	font-size: 30px;
+	color: #dadada;
+	text-decoration: none;
+}
+.page-header {
+	border: none;
+	text-align: center;
+	margin: 20px 0 10px;
+}
+.page-header h1 {
+	font-size: 40px;
+}
+.page-header h2 {
+	font-size: 14px;
+	margin-top: 10px;
+	color: #999;
+}
+.control {
+	margin: 0 0 20px 0;
+}
+.table-condensed.table-calendar {
+	font-size: 13px;
+	border: none;
+}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	border: none;
+}
+.table-condensed.table-calendar>thead>tr>th,
+.table-condensed.table-calendar>tbody>tr>th,
+.table-condensed.table-calendar>tfoot>tr>th,
+.table-condensed.table-calendar>thead>tr>td,
+.table-condensed.table-calendar>tbody>tr>td,
+.table-condensed.table-calendar>tfoot>tr>td {
+	padding: 0;
+}
+/*.table-condensed.table-calendar tr {
+	height: 18px;
+}*/
+.table-condensed.table-calendar tr:hover {
+	background-color: #f5f5f5;
+}
+.table-condensed.table-calendar td.zone:hover {
+	
+}
+.table-calendar td.zone {
+	border: 1px solid #999;
+}
+.table-calendar td.zone-j-0 {
+	border-top: 1px solid #999;
+}
+.table-calendar td.zone-j-1,
+.table-calendar td.zone-j-2,
+.table-calendar td.zone-j-3{
+	border-top: 1px dotted #bbb;
+}
+.table-calendar td.zone-j-0,
+.table-calendar td.zone-j-1,
+.table-calendar td.zone-j-2 {
+	border-bottom: 1px dotted #bbb;
+}
+.table-calendar td.zone-j-3 {
+	border-bottom: 1px solid #999;
+}
+.table-calendar th.hour-label {
+	border-left: 1px solid #999;
+	border-right: 1px solid #999;
+}
+.table-calendar th.hour-j-0 {
+	border-top: 1px solid #999;
+}
+.table-calendar th.hour-j-3 {
+	border-bottom: 1px solid #999;
+}
+.hour-label {
+	text-align: center;
+}
+.day-label {
+	text-align: center;
+}
+.table-condensed.table-calendar td.zone .new-event,
+.table-condensed.table-calendar td.zone .event {
+	height: 18px;
+	background-color: transparent;
+	margin: 1px 1px;
+	border-radius: 3px;
+}
+.table-condensed.table-calendar td.zone .new-event {
+	background-color: #FFFFC3;
+	text-align: center;
+	color: #ECE87B;
+	opacity: 0;
+}
+.table-condensed.table-calendar td.zone .new-event:hover {
+	opacity: 1;
+}
+.table-condensed.table-calendar td.zone .event {
+	background-color: #FF73AB;
+	display: block;
+	color: #1d1d1d;
+	text-decoration: none;
+	padding: 1px 5px;
+	font-size: 12px;
+}
+.table-condensed.table-calendar td.zone.past .event {
+	background-color: #F7BEE0;
+}
+.table-condensed.table-calendar td.zone .new-event:hover {
+	/*background-color: #ff9b9b;*/
+	cursor: pointer;
+}
+.past {
+	background-color: #ddd;
+}

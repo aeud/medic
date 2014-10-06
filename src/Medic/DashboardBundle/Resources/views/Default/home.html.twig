@@ -1,6 +1,42 @@
 {% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% stylesheets '@MedicDashboardBundle/Resources/public/css/main.css' filter='cssrewrite' %}
+	<link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+{% endblock %}
+
 {% block body %}
-<h1>{{ calendar.name }}</h1>
+<header>
+	<div class="power-off pull-right">
+		<a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-power-off"></i></a>
+	</div>
+</header>
+<div class="page-header">
+	<h1>Week {{ from | date ('W') }}</h1>
+	<h2>{{ from | date ('d/m/Y') }} - {{ from | date_modify ('+4 days') | date ('d/m/Y') }}</h2>
+</div>
+<div class="control">
+	<div class="btn-toolbar pull-right" role="toolbar">
+		<div class="btn-group">
+			<a href="{{ path('home') }}" class="btn btn-default">Today</a>
+		</div>
+		<div class="btn-group">
+			<a href="{{ path('home', {'from': from | date_modify ('-1 week') | date ('Y-m-d')}) }}" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
+			<a href="{{ path('home', {'from': from | date_modify ('+1 week') | date ('Y-m-d')}) }}" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
+		</div>
+	</div>
+	<div class="btn-toolbar" role="toolbar">
+		<div class="btn-group">
+			<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">+ New event</a>
+		</div>
+		<div class="btn-group">
+			<a href="{{ path('home') }}" class="btn btn-default"><i class="fa fa-calendar-o"></i></a>
+		</div>
+	</div>
+</div>
+{# <h1>{{ calendar.name }}</h1>
 <div>
 	<ul>
 		{% for precal in app.user.precalendars if precal.calendar.isactive %}
@@ -15,26 +51,8 @@
 <div>
 	<a class="btn btn-default" href="{{ path('event_new', {'hash': calendar.hash}) }}">Create</a>
 </div>
-<table class="table">
-	<tr>
-		<th>Start</th>
-		<th>End</th>
-		<th>Title</th>
-		<th>Hash</th>
-	</tr>
-	{% for event in calendar.events %}
-	<tr>
-		<td>{{ event.start|date('d/m/Y H:i') }}</td>
-		<td>{{ event.end ? event.end|date('d/m/Y H:i') }}</td>
-		<td>{{ event.title }}</td>
-		<td><a href="{{ path('event_edit', {'hash': event.calendar.hash, 'hash2': event.hash}) }}">{{ event.hash }}</a></td>
-	</tr>
-	{% endfor %}
-</table>
-<div>
-	<button data-hour="11" data-uniqid="1" data-minutes="15" data-date="2014-12-12" type="button" class="btn btn-danger new-event" data-toggle="popover">Click to toggle popover</button>
-	<button data-hour="11" data-uniqid="2" data-minutes="30" data-date="2014-12-12" type="button" class="btn btn-danger new-event" data-toggle="popover">Click to toggle popover</button>
-</div>
+#}
+{% include "MedicDashboardBundle:Default:calendar.html.twig" %}
 {% endblock %}
 
 {% block javascripts %}
@@ -73,7 +91,6 @@ $('.new-event').on('shown.bs.popover', function () {
 
 function genQuickForm() {
 	var hour = $(this).data('hour');
-	console.log(hour);
 	var minutes = $(this).data('minutes');
 	var date = $(this).data('date');
 	var html = '';
@@ -93,6 +110,8 @@ function genQuickForm() {
 	html += '</select>';
 	html += '</div>';
 	html += '<div class="col-sm-4">';
+	html += '<input type="hidden" id="startInput" name="start" value="' + date + '">';
+	html += '<input type="hidden" id="callInput" name="call" value="{{ path('home', {'from': app.request.get('from')}) }}">';
 	html += '<select type="text" class="form-control" id="startMinutesInput" name="startm">';
 	html += '<option' + ('00' == minutes ? ' selected' : '') + ' value="00">00</option>';
 	html += '<option' + ('15' == minutes ? ' selected' : '') + ' value="15">15</option>';
