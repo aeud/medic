@@ -12,6 +12,19 @@
 	<div class="power-off pull-right">
 		<a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-power-off"></i></a>
 	</div>
+	<div class="profile">
+		<div class="avatar">
+			<img src="http://placehold.it/150x150" alt="{{ app.user.username }}" class="img-rounded" width="40">
+		</div>
+		<div class="infos">
+			<div class="username">
+				Hi {{ app.user.username }}
+			</div>
+			<div class="to-profile">
+				<a href="{{ path('settings') }}"><i class="fa fa-cog"></i> settings</a>
+			</div>
+		</div>
+	</div>
 </header>
 <div class="page-header">
 	<h1>Week {{ from | date ('W') }}</h1>

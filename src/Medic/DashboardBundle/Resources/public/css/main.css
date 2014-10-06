@@ -9,6 +9,23 @@ h1, .h1, h2, .h2, h3, .h3 {
 header {
 	height: 40px;
 	padding: 10px 0 0 0;
+	position: relative;
+}
+header .profile {
+	padding: 0 0 0 50px;
+	position: relative;
+}
+header .profile .avatar {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+header .profile .infos {
+	
+}
+.to-profile a {
+	color: #1d1d1d;
+	font-size: 12px;
 }
 .power-off a {
 	font-size: 30px;
