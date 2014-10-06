@@ -9,12 +9,12 @@
 
 {% block body %}
 <header>
-	<div class="power-off pull-right">
+	<div class="power-off">
 		<a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-power-off"></i></a>
 	</div>
 	<div class="profile">
 		<div class="avatar">
-			<img src="http://placehold.it/150x150" alt="{{ app.user.username }}" class="img-rounded" width="40">
+			<img src="http://placehold.it/40x40" alt="{{ app.user.username }}" class="img-rounded" width="40">
 		</div>
 		<div class="infos">
 			<div class="username">
@@ -72,7 +72,7 @@
 {{ parent() }}
 <script>
 $('.new-event').popover({
-	'title': '<button type="button" class="close popover-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>Test',
+	'title': '<button type="button" class="close popover-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> Quick add',
 	'html': true,
 	'content': genQuickForm,
 	'placement': 'top',
@@ -108,12 +108,22 @@ function genQuickForm() {
 	var date = $(this).data('date');
 	var html = '';
 	html += '<form class="form-horizontal" role="form" action="{{ path('event_new', {'hash': calendar.hash}) }}" method="POST">';
+	html += '<input type="hidden" id="startInput" name="start" value="' + date + '">';
+	html += '<input type="hidden" id="startInput" name="startm" value="' + minutes + '">';
+	html += '<input type="hidden" id="startInput" name="starth" value="' + hour + '">';
 	html += '<div class="form-group">';
-	html += '<div class="col-sm-12">';
+	html += '<div class="col-sm-8">';
 	html += '<input type="text" class="form-control" id="titleInput" name="title" placeholder="Title">';
 	html += '</div>';
+	html += '<div class="col-sm-4">';
+	html += '<select type="text" class="form-control" id="durationInput" name="duration">';
+	html += '<option value="+15 minutes">15</option>';
+	html += '<option value="+30 minutes">30</option>';
+	html += '<option value="+45 minutes">45</option>';
+	html += '</select>';
 	html += '</div>';
-	html += '<div class="form-group">';
+	html += '</div>';
+	/*html += '<div class="form-group">';
 	html += '<div class="col-sm-4">';
 	html += '<select type="text" class="form-control" id="startHoursInput" name="starth">';
 	for (var i = 0; i < 24; i++) {
@@ -123,7 +133,6 @@ function genQuickForm() {
 	html += '</select>';
 	html += '</div>';
 	html += '<div class="col-sm-4">';
-	html += '<input type="hidden" id="startInput" name="start" value="' + date + '">';
 	html += '<input type="hidden" id="callInput" name="call" value="{{ path('home', {'from': app.request.get('from')}) }}">';
 	html += '<select type="text" class="form-control" id="startMinutesInput" name="startm">';
 	html += '<option' + ('00' == minutes ? ' selected' : '') + ' value="00">00</option>';
@@ -139,13 +148,16 @@ function genQuickForm() {
 	html += '<option value="+45 minutes">45</option>';
 	html += '</select>';
 	html += '</div>';
-	html += '</div>';
+	html += '</div>';*/
 	html += '<div class="form-group">';
 	html += '<div class="col-sm-12">';
+	html += '<div class="btn-toolbar pull-right" role="toolbar">';
 	html += '<div class="btn-group">';
-//	html += '<button type="button" class="btn btn-default popover-close">Cancel</button>';
-	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">More</a>';
-	html += '<button type="submit" class="btn btn-primary">Right</button>';
+	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">More Details</a>';
+	html += '</div>';
+	html += '<div class="btn-group">';
+	html += '<button type="submit" class="btn btn-danger">Quick add</button>';
+	html += '</div>';
 	html += '</div>';
 	html += '</div>';
 	html += '</div>';
