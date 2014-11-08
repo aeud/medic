@@ -9,35 +9,33 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="home")
+     * @Route("/{week}/{year}", name="home", defaults={"week"=NULL,"year"=NULL}, requirements={"week"="\d+","year"="\d+"})
      * @Template()
      */
-    public function homeAction()
+    public function homeAction($week, $year)
     {
+		
 		$securityContext = $this->container->get('security.context');
 		if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-			$request = $this->getRequest();
-			$query = $request->query;
 			$user = $this->getUser();
-		
-			$from = $query->get('from');
-		
-			if (preg_match('/^20[0-2][0-9]\-[0,1][0-9]\-[0-3][0-9]$/i', $from)) {
-				$from = new \DateTime($from);
-				while ($from->format('N') != '1'){
-					$from->modify('-1 day');
-				}
-				$to = new \DateTime($from->format('Y-m-d'));
-				$to->modify('+5 days');
-			} else {
-				$from = new \DateTime();
-				$from = new \DateTime($from->format('Y-m-d'));
-				while ($from->format('N') != '1'){
-					$from->modify('-1 day');
-				}
-				$to = new \DateTime($from->format('Y-m-d'));
-				$to->modify('+5 days');
+			$now = new \DateTime();
+			if ($year === null) {
+				$year = (int) $now->format('Y');
 			}
+			if ($week === null) {
+				$week = (int) $now->format('W');
+			}
+			if ($week == 0) {
+				return $this->redirect($this->generateUrl('home', array(
+					'week' => 52,
+					'year' => $year - 1
+				)));
+			}
+			
+			
+			$from = $now->setISODate($year, $week);
+			$to = new \DateTime($from->format('Y-m-d'));
+			$to->modify('+7 days');
 			
 			$em = $this->getDoctrine()->getManager();
 			
@@ -81,7 +79,7 @@ class DefaultController extends Controller
 			
 			$date = new \DateTime($from->format('Y-m-d'));
 			$days = array();
-			for ($i=0; $i < 5; $i++) { 
+			for ($i=0; $i < 7; $i++) { 
 				$days[] = $date->format('Y-m-d');
 				$date->modify('+1 day');
 			}
@@ -90,7 +88,9 @@ class DefaultController extends Controller
 		    	'calendar' => $calendar,
 				'days' => $days,
 				'events' => $events,
-				'from' => $from
+				'from' => $from,
+				'week' => $week,
+				'year' => $year
 		    );
 		} else {
 			return $this->render('MedicDashboardBundle:Default:test.html.twig',array(

@@ -7,6 +7,13 @@
 {% endstylesheets %}
 {% endblock %}
 
+{% if app.request.query.get('start') %}
+{% set from = (app.request.query.get('start') ~ ' ' ~ (app.request.query.get('starth') < 10 ? '0') ~ app.request.query.get('starth') ~ ':' ~ (app.request.query.get('startm') < 10 ? '0') ~ app.request.query.get('startm') ~ ':00') %}
+{% else %}
+{% set from = 'now' | date('Y-m-d H:00:00') | date_modify('+1 hour') %}
+{% endif %}
+{% set to = from | date_modify('+15 minutes') %}
+
 {% block body %}
 <header>
 	<div class="power-off pull-right">
@@ -33,84 +40,42 @@
 		<div class="form-group">
 			<label for="startInput" class="col-sm-2 control-label">Start</label>
 			<div class="col-sm-8">
-				<input type="text" class="form-control" id="startInput" name="start" placeholder="2014-12-01">
+				<input type="text" class="form-control" id="startInput" name="start" value="{{ app.request.query.get('start') }}">
 			</div>
 			<div class="col-sm-1">
 				<select type="text" class="form-control" id="startHoursInput" name="starth">
-					<option>00</option>
-					<option>01</option>
-					<option>02</option>
-					<option>03</option>
-					<option>04</option>
-					<option>05</option>
-					<option>06</option>
-					<option>07</option>
-					<option>08</option>
-					<option selected>09</option>
-					<option>10</option>
-					<option>11</option>
-					<option>12</option>
-					<option>13</option>
-					<option>14</option>
-					<option>15</option>
-					<option>16</option>
-					<option>17</option>
-					<option>18</option>
-					<option>19</option>
-					<option>20</option>
-					<option>21</option>
-					<option>22</option>
-					<option>23</option>
+					{% for i in 0..23 %}
+					<option value="{{ i }}" {% if from | date('G') == i %}selected{% endif %}>{{ i < 10 ? '0' }}{{ i }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-sm-1">
 				<select type="text" class="form-control" id="startMinutesInput" name="startm">
-					<option>00</option>
-					<option>15</option>
-					<option>30</option>
-					<option>45</option>
+					{% for i in 0..3 %}
+					<option value="{{ i * 15 }}" {% if from | date('i') | number_format == i * 15 %}selected{% endif %}>{{ i * 15 < 10 ? '0' }}{{ i * 15 }}</option>
+					{% endfor %}
 				</select>
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="endInput" class="col-sm-2 control-label">End</label>
 			<div class="col-sm-8">
-				<input type="text" class="form-control" id="endInput" name="end" placeholder="2014-12-01">
+				<input type="text" class="form-control" id="endInput" name="end" value="{{ app.request.query.get('start') }}">
 			</div>
 			<div class="col-sm-1">
+				
+				
 				<select type="text" class="form-control" id="endHoursInput" name="endh">
-					<option>00</option>
-					<option>01</option>
-					<option>02</option>
-					<option>03</option>
-					<option>04</option>
-					<option>05</option>
-					<option>06</option>
-					<option>07</option>
-					<option>08</option>
-					<option selected>09</option>
-					<option>10</option>
-					<option>11</option>
-					<option>12</option>
-					<option>13</option>
-					<option>14</option>
-					<option>15</option>
-					<option>16</option>
-					<option>17</option>
-					<option>18</option>
-					<option>19</option>
-					<option>20</option>
-					<option>21</option>
-					<option>22</option>
-					<option>23</option>
+					{% for i in 0..23 %}
+					<option value="{{ i }}" {% if to | date('G') == i %}selected{% endif %}>{{ i < 10 ? '0' }}{{ i }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-sm-1">
 				<select type="text" class="form-control" id="endMinutesInput" name="endm">
-					<option>00</option>
-					<option selected>15</option>
-					<option>30</option>
-					<option>45</option>
+					{% for i in 0..3 %}
+					<option value="{{ i * 15 }}" {% if to | date('i') | number_format == i * 15 %}selected{% endif %}>{{ i * 15 < 10 ? '0' }}{{ i * 15 }}</option>
+					{% endfor %}
 				</select>
 			</div>
 		</div>

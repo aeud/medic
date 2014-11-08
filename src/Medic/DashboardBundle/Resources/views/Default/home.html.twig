@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-{% stylesheets '@MedicDashboardBundle/Resources/public/css/main.css' filter='cssrewrite' %}
+{% stylesheets '@MedicDashboardBundle/Resources/public/css/*' filter='cssrewrite' %}
 	<link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 {% endblock %}
@@ -36,8 +36,8 @@
 			<a href="{{ path('home') }}" class="btn btn-default">Today</a>
 		</div>
 		<div class="btn-group">
-			<a href="{{ path('home', {'from': from | date_modify ('-1 week') | date ('Y-m-d')}) }}" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
-			<a href="{{ path('home', {'from': from | date_modify ('+1 week') | date ('Y-m-d')}) }}" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
+			<a href="{{ path('home', {'week': week - 1, 'year': year}) }}" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
+			<a href="{{ path('home', {'week': week + 1, 'year': year}) }}" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
 		</div>
 	</div>
 	<div class="btn-toolbar" role="toolbar">
@@ -70,7 +70,15 @@
 
 {% block javascripts %}
 {{ parent() }}
+{# {% javascripts '@MedicDashboardBundle/Resources/public/js/picker.js' %}
+	<script src="{{ asset_url }}" />
+{% endjavascripts %} #}
 <script>
+$('#tessst').pidckadate({
+	'onstart': function(){
+		console.log('test');
+	}
+});
 $('.new-event').popover({
 	'title': '<button type="button" class="close popover-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> Quick add',
 	'html': true,
@@ -153,7 +161,7 @@ function genQuickForm() {
 	html += '<div class="col-sm-12">';
 	html += '<div class="btn-toolbar pull-right" role="toolbar">';
 	html += '<div class="btn-group">';
-	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">More Details</a>';
+	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}?start=' + date + '&starth=' + hour + '&startm=' + minutes + '" class="btn btn-default">More Details</a>';
 	html += '</div>';
 	html += '<div class="btn-group">';
 	html += '<button type="submit" class="btn btn-danger">Quick add</button>';

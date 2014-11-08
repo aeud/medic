@@ -111,7 +111,8 @@ class EventController extends Controller
 			return $this->redirect($call);
 		} else {
 			return $this->redirect($this->generateUrl('home', array(
-				'from' => $from->format('Y-m-d')
+				'week' => $from->format('W'),
+				'year' => $from->format('Y')
 			)));
 		}
 		
@@ -199,7 +200,8 @@ class EventController extends Controller
 		$em->flush();
 		
 		return $this->redirect($this->generateUrl('home', array(
-			'from' => $from->format('Y-m-d')
+			'week' => $from->format('W'),
+			'year' => $from->format('Y')
 		)));
     }
 	
@@ -224,11 +226,15 @@ class EventController extends Controller
 			'hash2' => $hash2
 		));
 		$event = $query->getSingleResult();
+		$from = $event->getStart();
 		
 		$em->remove($event);
 		$em->flush();
 		
-		return $this->redirect($this->generateUrl('home'));
+		return $this->redirect($this->generateUrl('home', array(
+			'week' => $from->format('W'),
+			'year' => $from->format('Y')
+		)));
     }
 	
     /**
