@@ -2,7 +2,7 @@
 	<tr>
 		<th></th>
 		{% for day in days %}
-		<th class="day-label">{{ day | date ('D j/n') }}</th>	
+		<th class="day-label">{{ day | date ('D j/n') }}</th>
 		{% endfor %}
 	</tr>
 	{% for i in 8..20 %}
@@ -11,10 +11,17 @@
 		<th class="hour-label hour-h-{{ i }} hour-j-{{ j }}">{% if loop.first %}{{ i < 10 ? '0' }}{{ i }}:{{ j == 0 ? '00' : j * 15 }}{% endif %}</th>
 		{% for day in days %}
 		{% set date = date(day ~ i ~ ':' ~ (j * 15)) %}
-		<td class="zone zone-h-{{ i }} zone-j-{{ j }} zone-d-{{ loop.index }} {% if date() > date %}past{% endif %}">
+		{% set slotString = date | date('N-G-') ~ date | date('i') | number_format %}
+		{% set isHoliday = false %}
+		{% for holiday in holidays %}
+			{% if date >= holiday.start and date <= holiday.end %}
+				{% set isHoliday = true %}
+			{% endif %}
+		{% endfor %}
+		<td class="zone zone-h-{{ i }} zone-j-{{ j }} zone-d-{{ loop.index }} {% if date() > date %}past{% endif %} {% if slotString in slots %}slot{% endif %} {{ isHoliday ? 'holiday' }}">
 			{% if events[date | date ('Y-m-d H:i:s')] is defined %}
 			{% for event in events[date | date ('Y-m-d H:i:s')] %}
-				<a class="event" href="{{ path('event_edit', {'hash': calendar.hash, 'hash2': event.hash}) }}">
+				<a class="event" href="{{ path('event_edit', {'hash': calendar.hash, 'hash2': event.hash, 'call': path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }) }}">
 					{{ event.title }}
 				</a>
 			{% endfor %}

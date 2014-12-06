@@ -21,7 +21,7 @@ header .profile .avatar {
 	left: 0;
 }
 header .profile .infos {
-
+	
 }
 .to-profile a {
 	color: #1d1d1d;
@@ -76,7 +76,7 @@ header .profile .infos {
 	background-color: #f5f5f5;
 }
 .table-condensed.table-calendar td.zone:hover {
-
+	
 }
 .table-calendar td.zone {
 	border: 1px solid #999;
@@ -128,12 +128,6 @@ header .profile .infos {
 }
 .table-condensed.table-calendar td.zone .new-event:hover {
 	opacity: 1;
-}
-.table-condensed.table-calendar td.zone.slot {
-	background-color: #DFFFF4;
-}
-.table-condensed.table-calendar td.zone.holiday {
-	background-color: rgb(210, 193, 249);
 }
 .table-condensed.table-calendar td.zone .event {
 	background-color: #FF73AB;

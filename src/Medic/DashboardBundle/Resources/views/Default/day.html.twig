@@ -1,0 +1,146 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+{% stylesheets '@MedicDashboardBundle/Resources/public/css/*' filter='cssrewrite' %}
+	<link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+<header>
+	<div class="power-off">
+		<a href="{{ path('fos_user_security_logout') }}"><i class="fa fa-power-off"></i></a>
+	</div>
+	<div class="profile">
+		<div class="avatar">
+			<img src="http://placehold.it/40x40" alt="{{ app.user.username }}" class="img-rounded" width="40">
+		</div>
+		<div class="infos">
+			<div class="username">
+				Hi {{ app.user.username }}
+			</div>
+			<div class="to-profile">
+				<a href="{{ path('settings') }}"><i class="fa fa-cog"></i> settings</a>
+			</div>
+		</div>
+	</div>
+</header>
+<div class="page-header">
+	<h1>Day</h1>
+	<h2>{{ from | date ('d/m/Y') }}</h2>
+</div>
+<div class="control">
+	<div class="btn-toolbar pull-right" role="toolbar">
+		<div class="btn-group">
+			<a href="{{ path('day') }}" class="btn btn-default">Today</a>
+		</div>
+		<div class="btn-group">
+			<a href="{{ path('day', {'date': from | date_modify('-1 day') | date('Y-m-d')}) }}" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
+			<a href="{{ path('day', {'date': from  | date_modify('+1 day') | date('Y-m-d')}) }}" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
+		</div>
+	</div>
+	<div class="btn-toolbar" role="toolbar">
+		<div class="btn-group">
+			<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">+ New event</a>
+		</div>
+		<div class="btn-group">
+			<a href="{{ path('day') }}" class="btn btn-default"><i class="fa fa-calendar-o"></i></a>
+		</div>
+	</div>
+</div>
+{# <h1>{{ calendar.name }}</h1>
+<div>
+	<ul>
+		{% for precal in app.user.precalendars if precal.calendar.isactive %}
+		<li>
+			<a href="{{ path('calendar_default', {'hash': precal.calendar.hash}) }}">{{ precal.calendar.name }}</a>
+			{% if not loop.first %}<a href="{{ path('calendar_cancel', {'hash': precal.calendar.hash}) }}">remove</a>{% endif %}
+		</li>
+		{% endfor %}
+		<li><a href="{{ path('calendar_new') }}">New</a></li>
+	</ul>
+</div>
+<div>
+	<a class="btn btn-default" href="{{ path('event_new', {'hash': calendar.hash}) }}">Create</a>
+</div>
+#}
+{% include "MedicDashboardBundle:Default:calendar.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{# {% javascripts '@MedicDashboardBundle/Resources/public/js/picker.js' %}
+	<script src="{{ asset_url }}" />
+{% endjavascripts %} #}
+<script>
+$('.new-event').popover({
+	'title': '<button type="button" class="close popover-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> Quick add',
+	'html': true,
+	'content': genQuickForm,
+	'placement': 'top',
+	'trigger': 'manual',
+	'delay': {
+		'show': 100
+	}
+});
+var activePop = null;
+$('.new-event').click(function(){
+	if (activePop && activePop.data('uniqid') == $(this).data('uniqid')) {
+		// activePop.popover('hide');
+		// activePop = null;
+	} else {
+		if (activePop) {
+			activePop.popover('hide');
+		}
+		activePop = $(this);
+		activePop.popover('show');
+	}
+});
+$('.new-event').on('shown.bs.popover', function () {
+	$('#titleInput').focus();
+	$('.popover-close').click(function(){
+		$('.new-event').popover('hide');
+		activePop = null;
+	});
+});
+
+function genQuickForm() {
+	var hour = $(this).data('hour');
+	var minutes = $(this).data('minutes');
+	var date = $(this).data('date');
+	var html = '';
+	html += '<form class="form-horizontal" role="form" action="{{ path('event_new', {'hash': calendar.hash}) }}" method="POST">';
+	html += '<input type="hidden" id="startInput" name="start" value="' + date + '">';
+	html += '<input type="hidden" id="startInput" name="startm" value="' + minutes + '">';
+	html += '<input type="hidden" id="startInput" name="starth" value="' + hour + '">';
+	html += '<input type="hidden" id="routeInput" name="call" value="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}">';
+	html += '<div class="form-group">';
+	html += '<div class="col-sm-8">';
+	html += '<input type="text" class="form-control" id="titleInput" name="title" placeholder="Title">';
+	html += '</div>';
+	html += '<div class="col-sm-4">';
+	html += '<select type="text" class="form-control" id="durationInput" name="duration">';
+	html += '<option value="+15 minutes">15</option>';
+	html += '<option value="+30 minutes">30</option>';
+	html += '<option value="+45 minutes">45</option>';
+	html += '</select>';
+	html += '</div>';
+	html += '</div>';
+	html += '<div class="form-group">';
+	html += '<div class="col-sm-12">';
+	html += '<div class="btn-toolbar pull-right" role="toolbar">';
+	html += '<div class="btn-group">';
+	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}?start=' + date + '&starth=' + hour + '&startm=' + minutes + '&call={{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}" class="btn btn-default">More Details</a>';
+	html += '</div>';
+	html += '<div class="btn-group">';
+	html += '<button type="submit" class="btn btn-danger">Quick add</button>';
+	html += '</div>';
+	html += '</div>';
+	html += '</div>';
+	html += '</div>';
+	html += '</form>';
+	return html;
+}
+</script>
+{% endblock %}

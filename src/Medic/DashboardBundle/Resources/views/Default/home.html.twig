@@ -27,150 +27,18 @@
 	</div>
 </header>
 <div class="page-header">
-	<h1>Week {{ from | date ('W') }}</h1>
-	<h2>{{ from | date ('d/m/Y') }} - {{ from | date_modify ('+4 days') | date ('d/m/Y') }}</h2>
+	<h1>Summary</h1>
+	<h2>Events to come</h2>
 </div>
-<div class="control">
-	<div class="btn-toolbar pull-right" role="toolbar">
-		<div class="btn-group">
-			<a href="{{ path('home') }}" class="btn btn-default">Today</a>
-		</div>
-		<div class="btn-group">
-			<a href="{{ path('home', {'week': week - 1, 'year': year}) }}" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
-			<a href="{{ path('home', {'week': week + 1, 'year': year}) }}" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
-		</div>
-	</div>
-	<div class="btn-toolbar" role="toolbar">
-		<div class="btn-group">
-			<a href="{{ path('event_new', {'hash': calendar.hash}) }}" class="btn btn-default">+ New event</a>
-		</div>
-		<div class="btn-group">
-			<a href="{{ path('home') }}" class="btn btn-default"><i class="fa fa-calendar-o"></i></a>
-		</div>
-	</div>
+{% for event in events %}
+<div class="event">
+	{{ event.start | date('d/m/Y') }} {{ event.start | date('H:i') }} {{ event.end | date('d/m/Y') }} {{ event.end | date('H:i') }} {{ event.title }}
 </div>
-{# <h1>{{ calendar.name }}</h1>
-<div>
-	<ul>
-		{% for precal in app.user.precalendars if precal.calendar.isactive %}
-		<li>
-			<a href="{{ path('calendar_default', {'hash': precal.calendar.hash}) }}">{{ precal.calendar.name }}</a>
-			{% if not loop.first %}<a href="{{ path('calendar_cancel', {'hash': precal.calendar.hash}) }}">remove</a>{% endif %}
-		</li>
-		{% endfor %}
-		<li><a href="{{ path('calendar_new') }}">New</a></li>
-	</ul>
+{% endfor %}
+<div class="hidden-xs">
+	<a class="btn btn-default btn-block" href="{{ path('week') }}">Planning</a>
 </div>
-<div>
-	<a class="btn btn-default" href="{{ path('event_new', {'hash': calendar.hash}) }}">Create</a>
+<div class="visible-xs">
+	<a class="btn btn-default btn-block" href="{{ path('day') }}">Planning</a>
 </div>
-#}
-{% include "MedicDashboardBundle:Default:calendar.html.twig" %}
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
-{# {% javascripts '@MedicDashboardBundle/Resources/public/js/picker.js' %}
-	<script src="{{ asset_url }}" />
-{% endjavascripts %} #}
-<script>
-$('#tessst').pidckadate({
-	'onstart': function(){
-		console.log('test');
-	}
-});
-$('.new-event').popover({
-	'title': '<button type="button" class="close popover-close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> Quick add',
-	'html': true,
-	'content': genQuickForm,
-	'placement': 'top',
-	'trigger': 'manual',
-	'delay': {
-		'show': 100
-	}
-});
-var activePop = null;
-$('.new-event').click(function(){
-	if (activePop && activePop.data('uniqid') == $(this).data('uniqid')) {
-		// activePop.popover('hide');
-		// activePop = null;
-	} else {
-		if (activePop) {
-			activePop.popover('hide');
-		}
-		activePop = $(this);
-		activePop.popover('show');
-	}
-});
-$('.new-event').on('shown.bs.popover', function () {
-	$('#titleInput').focus();
-	$('.popover-close').click(function(){
-		$('.new-event').popover('hide');
-		activePop = null;
-	});
-});
-
-function genQuickForm() {
-	var hour = $(this).data('hour');
-	var minutes = $(this).data('minutes');
-	var date = $(this).data('date');
-	var html = '';
-	html += '<form class="form-horizontal" role="form" action="{{ path('event_new', {'hash': calendar.hash}) }}" method="POST">';
-	html += '<input type="hidden" id="startInput" name="start" value="' + date + '">';
-	html += '<input type="hidden" id="startInput" name="startm" value="' + minutes + '">';
-	html += '<input type="hidden" id="startInput" name="starth" value="' + hour + '">';
-	html += '<div class="form-group">';
-	html += '<div class="col-sm-8">';
-	html += '<input type="text" class="form-control" id="titleInput" name="title" placeholder="Title">';
-	html += '</div>';
-	html += '<div class="col-sm-4">';
-	html += '<select type="text" class="form-control" id="durationInput" name="duration">';
-	html += '<option value="+15 minutes">15</option>';
-	html += '<option value="+30 minutes">30</option>';
-	html += '<option value="+45 minutes">45</option>';
-	html += '</select>';
-	html += '</div>';
-	html += '</div>';
-	/*html += '<div class="form-group">';
-	html += '<div class="col-sm-4">';
-	html += '<select type="text" class="form-control" id="startHoursInput" name="starth">';
-	for (var i = 0; i < 24; i++) {
-		var h = (i < 10 ? '0' : '') + i;
-		html += '<option' + (h == hour ? ' selected' : '') + '>'+h+'</option>';
-	}
-	html += '</select>';
-	html += '</div>';
-	html += '<div class="col-sm-4">';
-	html += '<input type="hidden" id="callInput" name="call" value="{{ path('home', {'from': app.request.get('from')}) }}">';
-	html += '<select type="text" class="form-control" id="startMinutesInput" name="startm">';
-	html += '<option' + ('00' == minutes ? ' selected' : '') + ' value="00">00</option>';
-	html += '<option' + ('15' == minutes ? ' selected' : '') + ' value="15">15</option>';
-	html += '<option' + ('30' == minutes ? ' selected' : '') + ' value="30">30</option>';
-	html += '<option' + ('45' == minutes ? ' selected' : '') + ' value="45">45</option>';
-	html += '</select>';
-	html += '</div>';
-	html += '<div class="col-sm-4">';
-	html += '<select type="text" class="form-control" id="durationInput" name="duration">';
-	html += '<option value="+15 minutes">15</option>';
-	html += '<option value="+30 minutes">30</option>';
-	html += '<option value="+45 minutes">45</option>';
-	html += '</select>';
-	html += '</div>';
-	html += '</div>';*/
-	html += '<div class="form-group">';
-	html += '<div class="col-sm-12">';
-	html += '<div class="btn-toolbar pull-right" role="toolbar">';
-	html += '<div class="btn-group">';
-	html += '<a href="{{ path('event_new', {'hash': calendar.hash}) }}?start=' + date + '&starth=' + hour + '&startm=' + minutes + '" class="btn btn-default">More Details</a>';
-	html += '</div>';
-	html += '<div class="btn-group">';
-	html += '<button type="submit" class="btn btn-danger">Quick add</button>';
-	html += '</div>';
-	html += '</div>';
-	html += '</div>';
-	html += '</div>';
-	html += '</form>';
-	return html;
-}
-</script>
 {% endblock %}

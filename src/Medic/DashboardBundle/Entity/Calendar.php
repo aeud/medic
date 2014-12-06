@@ -42,32 +42,44 @@ class Calendar
      * @ORM\Column(name="hash", type="string", length=8, unique=true)
      */
     private $hash;
-	
+
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=127)
      */
     private $name;
-	
+
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
-	
+
 	/**
      * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\UserCalendar", mappedBy="calendar")
 	 * @ORM\OrderBy({"createdAt" = "ASC"})
      */
     private $preUsers;
-	
+
 	/**
      * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\Event", mappedBy="calendar")
 	 * @ORM\OrderBy({"start" = "ASC"})
      */
     private $events;
+
+	/**
+     * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\Slot", mappedBy="calendar")
+	 * @ORM\OrderBy({"weekDay" = "ASC", "hour"="ASC", "minutes"="ASC"})
+     */
+    private $slots;
+
+    /**
+    * @ORM\OneToMany(targetEntity="Medic\DashboardBundle\Entity\Holiday", mappedBy="calendar")
+    * @ORM\OrderBy({"start" = "ASC"})
+    */
+    private $holidays;
 
     /**
      * @ORM\PrePersist
@@ -77,7 +89,7 @@ class Calendar
 		$this->setCreatedAt(new \DateTime());
 		$this->setUpdatedAt(new \DateTime());
     }
-	
+
     /**
      * @ORM\PreUpdate
      */
@@ -88,7 +100,7 @@ class Calendar
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -111,7 +123,7 @@ class Calendar
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -134,7 +146,7 @@ class Calendar
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -157,7 +169,7 @@ class Calendar
     /**
      * Get hash
      *
-     * @return string 
+     * @return string
      */
     public function getHash()
     {
@@ -180,7 +192,7 @@ class Calendar
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -210,7 +222,7 @@ class Calendar
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -243,7 +255,7 @@ class Calendar
     /**
      * Get preUsers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getPreUsers()
     {
@@ -276,10 +288,76 @@ class Calendar
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
         return $this->events;
+    }
+
+    /**
+     * Add slots
+     *
+     * @param \Medic\DashboardBundle\Entity\Slot $slots
+     * @return Calendar
+     */
+    public function addSlot(\Medic\DashboardBundle\Entity\Slot $slots)
+    {
+        $this->slots[] = $slots;
+
+        return $this;
+    }
+
+    /**
+     * Remove slots
+     *
+     * @param \Medic\DashboardBundle\Entity\Slot $slots
+     */
+    public function removeSlot(\Medic\DashboardBundle\Entity\Slot $slots)
+    {
+        $this->slots->removeElement($slots);
+    }
+
+    /**
+     * Get slots
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSlots()
+    {
+        return $this->slots;
+    }
+
+    /**
+     * Add holidays
+     *
+     * @param \Medic\DashboardBundle\Entity\Holiday $holidays
+     * @return Calendar
+     */
+    public function addHoliday(\Medic\DashboardBundle\Entity\Holiday $holidays)
+    {
+        $this->holidays[] = $holidays;
+
+        return $this;
+    }
+
+    /**
+     * Remove holidays
+     *
+     * @param \Medic\DashboardBundle\Entity\Holiday $holidays
+     */
+    public function removeHoliday(\Medic\DashboardBundle\Entity\Holiday $holidays)
+    {
+        $this->holidays->removeElement($holidays);
+    }
+
+    /**
+     * Get holidays
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getHolidays()
+    {
+        return $this->holidays;
     }
 }

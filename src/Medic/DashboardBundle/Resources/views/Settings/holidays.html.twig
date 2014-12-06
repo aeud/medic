@@ -1,0 +1,31 @@
+{% extends 'MedicDashboardBundle::layout.html.twig' %}
+{% block body %}
+{{ parent() }}
+<div class="page-header">
+  <h1>Settings</h1>
+  <h2>Holidays</h2>
+</div>
+<div class="form-group">
+  <div class="col-sm-12">
+    <a href="{{ path('home') }}" class="btn btn-default"><i class="fa fa-long-arrow-left"></i></a>
+    <a href="{{ path('settings_slots') }}" class="btn btn-default"><i class="fa fa-th"></i></a>
+    <a href="{{ path('settings_holidays') }}" class="btn btn-default">Holidays</a>
+  </div>
+</div>
+<div>
+  <table class="table">
+    <tr>
+      <th>Title</th>
+      <th>Start</th>
+      <th>End</th>
+    </tr>
+    {% for holiday in holidays %}
+    <tr>
+      <td>{{ holiday.title }}</td>
+      <td>{{ holiday.start | date('d/m/Y H:i') }}</td>
+      <td>{{ holiday.end | date('d/m/Y H:i') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

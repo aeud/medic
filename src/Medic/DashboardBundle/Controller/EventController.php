@@ -11,6 +11,10 @@ use Medic\DashboardBundle\Entity\UserCalendar as Link;
 use Medic\DashboardBundle\Entity\Event;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * @Route("/admin")
+ */
+
 class EventController extends Controller
 {
     /**
@@ -83,7 +87,7 @@ class EventController extends Controller
 		
 		$from = new \DateTime($start . ' ' . $startH . ':' . $startM);
 		
-		if ($end && $endH && $endM) {
+		if ($end) {
 			$to = new \DateTime($end . ' ' . $endH . ':' . $endM);
 		} elseif ($duration) {
 			$to = new \DateTime($start . ' ' . $startH . ':' . $startM);
@@ -184,6 +188,8 @@ class EventController extends Controller
 		$privacy = $query->get('privacy');
 		$showMe = $query->get('showme');
 		
+		$call = $query->get('call');
+		
 		$from = new \DateTime($start . ' ' . $startH . ':' . $startM);
 		$to = new \DateTime($end . ' ' . $endH . ':' . $endM);
 		
@@ -199,10 +205,14 @@ class EventController extends Controller
 		
 		$em->flush();
 		
-		return $this->redirect($this->generateUrl('home', array(
-			'week' => $from->format('W'),
-			'year' => $from->format('Y')
-		)));
+		if ($call) {
+			return $this->redirect($call);
+		} else {
+			return $this->redirect($this->generateUrl('home', array(
+				'week' => $from->format('W'),
+				'year' => $from->format('Y')
+			)));
+		}
     }
 	
     /**
@@ -213,6 +223,8 @@ class EventController extends Controller
     {
 		$em = $this->getDoctrine()->getManager();
 		$user = $this->getUser();
+		
+		$call = $this->getRequest()->query->get('call');
 		
 		$query = $em->createQuery(
 		    'SELECT e
@@ -231,10 +243,14 @@ class EventController extends Controller
 		$em->remove($event);
 		$em->flush();
 		
-		return $this->redirect($this->generateUrl('home', array(
-			'week' => $from->format('W'),
-			'year' => $from->format('Y')
-		)));
+		if ($call) {
+			return $this->redirect($call);
+		} else {
+			return $this->redirect($this->generateUrl('home', array(
+				'week' => $from->format('W'),
+				'year' => $from->format('Y')
+			)));
+		}
     }
 	
     /**

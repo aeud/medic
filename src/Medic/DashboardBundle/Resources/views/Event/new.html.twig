@@ -25,9 +25,10 @@
 </div>
 <div>
 	<form class="form-horizontal" role="form" action="{{ path('event_new', {'hash': hash}) }}" method="POST">
+		<input type="hidden" name="call" value="{{ app.request.query.get('call') }}" id="call">
 		<div class="form-group">
 			<div class="col-sm-12">
-				<a href="{{ path('home') }}" class="btn btn-default"><i class="fa fa-long-arrow-left"></i></a>
+				<a href="{{ app.request.query.get('call') }}" class="btn btn-default"><i class="fa fa-long-arrow-left"></i></a>
 				<button type="submit" class="btn btn-danger">SAVE</button>
 			</div>
 		</div>
