@@ -1,3 +1,8 @@
+medic_api:
+    resource: "@MedicAPIBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 medic_dashboard:
     resource: "@MedicDashboardBundle/Controller/"
     type:     annotation
